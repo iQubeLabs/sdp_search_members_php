@@ -1,2 +1,4 @@
 disabled:
     - ordered_imports
+    - align_double_arrow
+    - align_equals
