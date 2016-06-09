@@ -4,46 +4,49 @@ namespace SDPSearchTest\Modules;
 
 use SDPSearchTest\TestCase;
 use SDPSearch\Modules\Indexer;
-use \Mockery as m;
+use Mockery as m;
 
+class IndexerTest extends TestCase
+{
+    protected $esClientMock;
+    protected $indexer;
 
-class IndexerTest extends TestCase {
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->esClientMock = m::mock('\ElasticSearch\Client');
+        $this->indexer = new Indexer($this->esClientMock);
+    }
 
-	protected $esClientMock;
-	protected $indexer;
+    public function tearDown()
+    {
+        m::close();
+    }
 
-	protected function setUp() {
-		parent::setUp();
-		$this->esClientMock = m::mock('\ElasticSearch\Client');
-		$this->indexer = new Indexer($this->esClientMock);
-	}
+    public function testIndex()
+    {
+        $this->esClientMock->shouldReceive('index')
+            ->once();
 
-	public function tearDown() {
-		m::close();
-	}
+        $this->indexer->index('iqubers', 'members', []);
+    }
 
-	public function testIndex() {
-		$this->esClientMock->shouldReceive('index')
-			->once();
+    public function testIndexAll()
+    {
+        $this->esClientMock->shouldReceive('index')
+            ->twice();
 
-		$this->indexer->index('iqubers', 'members', []);
-	}
+        $input = [
+            [
+                'name' => 'Perfect Makanju',
+                'age' => 30,
+            ],
+            [
+                'name' => 'James Fowe',
+                'age' => 40,
+            ],
+        ];
 
-	public function testIndexAll() {
-		$this->esClientMock->shouldReceive('index')
-			->twice();
-
-		$input = [
-			[
-				'name' => 'Perfect Makanju',
-				'age' => 30,
-			],
-			[
-				'name' => 'James Fowe',
-				'age' => 40,
-			],
-		];
-
-		$this->indexer->indexAll('iqubers', 'members', $input);
-	}
+        $this->indexer->indexAll('iqubers', 'members', $input);
+    }
 }

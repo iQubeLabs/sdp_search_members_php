@@ -1,11 +1,11 @@
 <?php
 
-require('vendor/autoload.php');
+require 'vendor/autoload.php';
 
 use SDPSearch\Application;
 
 //$client = \ElasticSearch\ClientBuilder::create()->build();
 
-$indexer = new SDPSearch\Modules\Indexer;
+$indexer = new SDPSearch\Modules\Indexer();
 
-Application::init(new \Slim\App);
+Application::init(new \Slim\App());
